@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enhanced Text Templates</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; object-src 'self';">
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Base styles */
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      width: 340px;
+      height: 700px;
+      margin: 0;
+      padding: 0;
+      background: #1a1b26;
+      color: #a9b1d6;
+      font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Main content wrapper */
+    .content-wrapper {
+      padding: 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Templates List Container */
+    .template-list-container {
+      flex: 1;
+      background: #24283b;
+      border-radius: 8px;
+      border: 1px solid #32344a;
+      margin-bottom: 8px;
+    }
+
+    /* Template list */
+    .template-list {
+      padding: 8px;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+    }
+
+    .template-item {
+      padding: 12px;
+      margin: 4px 0;
+      background: rgba(36, 40, 59, 0.8);
+      border-radius: 6px;
+      border: 1px solid rgba(50, 52, 74, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    .template-item:hover {
+      background: #2a2e42;
+      border-color: #414868;
+    }
+
+    /* Template name and category */
+    .template-name {
+      color: #7aa2f7;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .category-tag {
+      font-size: 0.85rem;
+      color: #e9d5ff;
+      font-weight: 400;
+      opacity: 1;
+    }
+
+    /* Action buttons */
+    .action-btn {
+      padding: 6px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #a9b1d6;
+    }
+
+    .action-btn:hover {
+      opacity: 1;
+    }
+
+    /* Form inputs */
+    input, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #24283b;
+      border: 1px solid #32344a;
+      border-radius: 6px;
+      color: #a9b1d6;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #7aa2f7;
+      outline: none;
+    }
+
+    /* Save button */
+    #saveTemplate {
+      width: 100%;
+      height: 44px;
+      background: #7aa2f7;
+      color: #1a1b26;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    #saveTemplate:hover {
+      opacity: 0.9;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: white;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Edit Template Section */
+    .edit-template-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 340px;
+      height: 600px;
+      background: #1a1b26;
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Edit form header */
+    .edit-template-section .flex.items-center {
+      margin-bottom: 20px;
+    }
+
+    /* Form layout */
+    #templateForm {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: calc(100% - 80px);
+    }
+
+    /* Input fields */
+    #templateName {
+      height: 40px;
+    }
+
+    #newTemplate {
+      height: 220px;
+      resize: none;
+    }
+
+    #newCategory {
+      height: 40px;
+    }
+
+    /* Labels */
+    label {
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    /* Save button container */
+    .button-container {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      padding: 0;
+    }
+
+    /* Base popup dimensions */
+    body {
+      width: 340px;
+      height: 580px;
+      margin: 0;
+      padding: 0;
+      background: #1a1b26;
+      color: #a9b1d6;
+      overflow: hidden;
+    }
+
+    /* Main container */
+    .flex.flex-col.h-full {
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header section */
+    .flex.items-center.justify-between {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0; /* Prevent header from shrinking */
+    }
+
+    /* Title */
+    h1.text-xl {
+      font-size: 1.25rem;
+      background: linear-gradient(to right, #60a5fa, #818cf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* New Template button */
+    #newTemplateBtn {
+      padding: 6px 12px;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 6px;
+      color: #60a5fa;
+      transition: all 0.2s;
+    }
+
+    #newTemplateBtn:hover {
+      background: rgba(96, 165, 250, 0.2);
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    /* Templates List Container */
+    .glass-morphism {
+      flex: 1;
+      margin: 12px;
+      margin-bottom: 72px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Edit Template Section */
+    .edit-template-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #1a1b26;
+      padding: 16px;
+      z-index: 10;
+    }
+
+    /* Form elements in edit section */
+    .edit-template-section form {
+      height: calc(100% - 60px);
+      overflow-y: auto;
+      padding-bottom: 16px;
+    }
+
+    /* Template list */
+    .template-list {
+      flex: 1;
+      padding: 8px;
+      margin: 0;
+      list-style: none;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    /* Hide scrollbar */
+    .template-list::-webkit-scrollbar,
+    .glass-morphism::-webkit-scrollbar {
+      display: none;
+      width: 0;
+    }
+
+    /* Add/update these styles in your CSS section */
+    .header {
+      width: 100%;
+      text-align: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .empty-state-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      color: #a9b1d6;
+    }
+
+    .empty-state-icon {
+      font-size: 18px;
+      opacity: 0.7;
+    }
+
+    .empty-state-button {
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 6px;
+      color: #60a5fa;
+      transition: all 0.2s;
+    }
+
+    .empty-state-button:hover {
+      background: rgba(96, 165, 250, 0.2);
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    /* Options button container */
+    .options-container {
+      position: fixed;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      padding: 4px 16px;
+      background: #1a1b26;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      height: 36px;
+      z-index: 10;
+    }
+
+    /* Options button */
+    #openOptions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    #openOptions:hover {
+      background: rgba(96, 165, 250, 0.2);
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    /* Toast container wrapper */
+    .toast-container-wrapper {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      background: #1a1b26;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Toast container */
+    .toast-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+  <div class="flex flex-col h-full">
+    <!-- Header section -->
+    <div class="header">
+      <h1 class="text-xl font-semibold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-3">
+        Quick Templates
+      </h1>
+      <button 
+        id="newTemplateBtn"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 hover:bg-blue-500/20 transition-all duration-200">
+        <i class="fas fa-plus"></i>
+        New Template
+      </button>
+    </div>
+
+    <!-- Templates List Container -->
+    <div class="flex-1 glass-morphism mx-2 mb-12">
+      <ul id="templateList" class="template-list"></ul>
+    </div>
+
+    <!-- Edit Template Section -->
+    <div class="edit-template-section hidden">
+      <div class="flex items-center mb-4">
+        <h2 class="text-lg font-semibold text-blue-400">Edit Template</h2>
+      </div>
+      
+      <form id="templateForm" class="space-y-4">
+        <div class="form-group">
+          <input 
+            type="text" 
+            id="templateName" 
+            placeholder="Template name..." 
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <textarea 
+            id="newTemplate" 
+            placeholder="Template content..." 
+            class="w-full h-32 px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <input 
+            type="text" 
+            id="newCategory" 
+            placeholder="Category (optional)" 
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button 
+            type="button" 
+            id="cancelEdit"
+            class="px-4 py-2 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors"
+          >
+            Save Template
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Options Button Container -->
+    <div class="options-container">
+      <button id="openOptions">
+        <i class="fas fa-cog"></i>
+        Options
+      </button>
+    </div>
+
+    <!-- Toast Container - New position -->
+    <div class="toast-container-wrapper">
+      <div class="toast-container"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+  <script src="init.js"></script>
+</body>
+</html>

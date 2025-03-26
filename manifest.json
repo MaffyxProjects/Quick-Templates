@@ -1,0 +1,51 @@
+{
+      "manifest_version": 3,
+      "name": "Enhanced Text Templates",
+      "version": "1.0",
+      "author": "Matt Fox",
+      "icons": {
+        "16": "icon.ico",
+        "32": "icon.ico",
+        "48": "icon.ico",
+        "128": "icon.ico"
+      },
+      "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+          "16": "icon.ico",
+          "32": "icon.ico",
+          "48": "icon.ico",
+          "128": "icon.ico"
+        }
+      },
+      "permissions": ["storage", "activeTab", "scripting", "commands", "downloads"],
+      "host_permissions": ["<all_urls>"],
+      "background": {
+        "service_worker": "background.js",
+        "type": "module"
+      },
+      "commands": {
+        "insert-template-1": {
+          "suggested_key": { "default": "Ctrl+Shift+1" },
+          "description": "Insert first template"
+        }
+      },
+      "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+      },
+      "options_page": "options.html",
+      "web_accessible_resources": [{
+        "resources": [
+          "popup.js",
+          "init.js",
+          "background.js",
+          "options.js",
+          "popup.html",
+          "options.html",
+          "styles/options.css",
+          "manifest.json",
+          "icon.ico"
+        ],
+        "matches": ["<all_urls>"]
+      }]
+    }

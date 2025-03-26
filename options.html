@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enhanced Text Templates - Options</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="styles/options.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Extension Settings</h1>
+
+    <!-- Instructions Section -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-info-circle"></i>
+          <h2>Instructions</h2>
+        </div>
+      </div>
+      <div class="instructions">
+        <h3>Template Management</h3>
+        <ul>
+          <li><strong>Export Templates:</strong> Download all your saved templates as a JSON file for backup or sharing.</li>
+          <li><strong>Import Templates:</strong> Upload a previously exported templates file to restore your templates.</li>
+        </ul>
+        
+        <h3>Cache Management</h3>
+        <ul>
+          <li><strong>Clear Cache:</strong> Remove all stored templates from the extension. Use with caution - this action cannot be undone!</li>
+        </ul>
+        
+        <p class="tip"><i class="fas fa-lightbulb"></i> Tip: Regularly export your templates as a backup to prevent accidental data loss.</p>
+      </div>
+    </div>
+
+    <!-- Cache Management -->
+    <div class="section section-danger">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-trash"></i>
+          <h2>Clear Cache</h2>
+        </div>
+      </div>
+      <p class="section-description">Remove all stored templates from the extension.</p>
+      <button id="clearCache" class="button button-danger">
+        <i class="fas fa-trash"></i>
+        Clear Cache
+      </button>
+    </div>
+
+    <!-- Template Management -->
+    <div class="section section-success">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-exchange-alt"></i>
+          <h2>Template Management</h2>
+        </div>
+      </div>
+      <p class="section-description">Import or export your templates</p>
+      <div class="button-group">
+        <button id="exportTemplates" class="button button-primary">
+          <i class="fas fa-download"></i>
+          Export All
+        </button>
+        <button id="importTemplates" class="button button-success">
+          <i class="fas fa-upload"></i>
+          Import
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
