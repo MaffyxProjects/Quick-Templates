@@ -70,10 +70,6 @@ A lightweight Chrome extension for managing and quickly inserting customizable t
 - Sanitizes user input and file names
 - Secure storage handling
 
-## License
-
-MIT License - See LICENSE file for details
-
 ## Contributing
 
 1. Fork the repository
